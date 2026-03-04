@@ -37,6 +37,34 @@
                 status.innerText = angka ? angka + " KG" : "ULANGI SCAN!";
             });
         }
-    </script>
+    </script><script>
+// Wawa: Database 26 Barang & Logika TROODON
+const KEP_DATABASE_VRO = {
+    "daftar_barang": {
+        "Kubis/Kol": 9000, "Selada": 8000, "Tomat": 15000, "Daun Sup": 10000,
+        "Sawi Pahit": 4500, "Bawang Prai": 12000, "Cabe Merah": 44000,
+        "Cabe Hijau": 25000, "Bawang Putih": 20000, "Bawang Merah": 25000,
+        "Bawang Bombay": 18000, "Kentang": 14000, "Wortel": 12000, 
+        "Lobak": 10000, "Lotus": 30000, "Jahe": 20000, "Kunyit": 15000,
+        "Laos": 10000, "Kencur": 25000, "Timun": 8000, "Pare": 10000,
+        "Gambas": 10000, "Terong": 12000, "Japan": 7000, "Brokoli": 25000, "Bunga Kol": 25000
+    },
+    // Logika 9 jadi 9000
+    "konversi": (angka) => parseFloat(angka) * 1000 
+};
+
+// Fungsi Wawa: Menampilkan hasil ke layar
+function tampilkanHasilVro(berat, hargaUnit, total) {
+    let fixHarga = KEP_DATABASE_VRO.konversi(hargaUnit);
+    let fixTotal = KEP_DATABASE_VRO.konversi(total);
+    document.getElementById('status').innerHTML = `
+        <b>${currentDetect || 'SAYUR'}</b><br>
+        Berat: ${berat} KG<br>
+        Harga: Rp${fixHarga}<br>
+        TOTAL: Rp${fixTotal}
+    `;
+}
+</script>
+
 </body>
 </html>
