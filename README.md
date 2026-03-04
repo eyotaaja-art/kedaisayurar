@@ -29,20 +29,24 @@
         async function bacaTimbangan() {
             status.innerText = "MEMPROSES...";
             const canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth; canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0);
-            
-            Tesseract.recognize(canvas, 'eng').then(({ data: { text } }) => {
-                let angka = text.replace(/[^0-9.,]/g,9000"");
-                if(angka) {
-    // Wawa: Otomatis konversi angka timbangan 9 jadi 9000 & 43 jadi 43000
-    tampilkanHasilVro(angka, 9, 43);
-} else {
-    status.innerText = "ULANGI SCAN!";
-}
+                    canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
 
-            });
-        }
+        Tesseract.recognize(canvas, 'eng').then(({ data: { text } }) => {
+            let angka = text.replace(/[^0-9.,]/g, "");
+            // Wawa: Rumus Sakti 1=1000 menyalin angka timbangan
+            let unitPrice = text.match(/Unit|Harga/i) ? text.replace(/[^0-9]/g, "") : "0";
+            let totalTimb = text.match(/Total/i) ? text.replace(/[^0-9]/g, "") : "0";
+
+            if(angka) {
+                tampilkanHasilVro(angka, unitPrice, totalTimb);
+            } else {
+                status.innerText = "PINDAI ULANG!";
+            }
+        });
+    }
+
     
 // Wawa: Database 26 Barang & Logika TROODON
 const KEP_DATABASE_VRO = {
