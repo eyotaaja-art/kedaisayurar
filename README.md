@@ -33,11 +33,17 @@
             canvas.getContext('2d').drawImage(video, 0, 0);
             
             Tesseract.recognize(canvas, 'eng').then(({ data: { text } }) => {
-                let angka = text.replace(/[^0-9.,]/g, "");
-                status.innerText = angka ? angka + " KG" : "ULANGI SCAN!";
+                let angka = text.replace(/[^0-9.,]/g,9000"");
+                if(angka) {
+    // Wawa: Otomatis konversi angka timbangan 9 jadi 9000 & 43 jadi 43000
+    tampilkanHasilVro(angka, 9, 43);
+} else {
+    status.innerText = "ULANGI SCAN!";
+}
+
             });
         }
-    </script><script>
+    
 // Wawa: Database 26 Barang & Logika TROODON
 const KEP_DATABASE_VRO = {
     "daftar_barang": {
