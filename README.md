@@ -82,42 +82,48 @@
     const video = document.getElementById('video');
     const wrap = document.getElementById('camera-wrap');
     const output = document.getElementById('output');
+    let angkaTerdeteksi = 0; // Jembatan langsung
 
     async function mulaiScan() {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
             video.srcObject = stream;
             wrap.style.display = 'block';
+            
+            // Mulai Mata AI membaca
+            setInterval(async () => {
+                const result = await Tesseract.recognize(video, 'eng');
+                let teks = result.data.text.replace(/[^0-9.]/g, '');
+                if(teks) {
+                    angkaTerdeteksi = parseFloat(teks);
+                    console.log("Mata Melihat: " + angkaTerdeteksi);
+                }
+            }, 1000);
         } catch (err) {
-            alert("Izin kamera ditolak. Pastikan pakai HTTPS GitHub!");
+            alert("Izin kamera ditolak!");
         }
     }
 
     function stopScan() {
         const stream = video.srcObject;
-        if(stream) stream.getTracks().forEach(t => t.stop());
+        stream.getTracks().forEach(t => t.stop());
         wrap.style.display = 'none';
     }
 
     function tempelTeks() {
-        navigator.clipboard.readText().then(text => {
-            // Logika 1 = 1000 (Misal angka timbangan 50gr)
-            let angka = parseFloat(text) || 0;
-            let harga = document.getElementById('pilihSayur').value;
-            let nama = document.getElementById('pilihSayur').options[document.getElementById('pilihSayur').selectedIndex].text.split('(')[0];
-            let total = angka * harga;
-            
-            output.value += `${nama}: ${angka}gr x Rp${harga} = Rp${total}\n`;
-        });
+        // Langsung ambil apa yang dilihat mata, bukan dari clipboard
+        let angka = angkaTerdeteksi || 0;
+        let harga = document.getElementById('pilihSayur').value;
+        let nama = document.getElementById('pilihSayur').options[document.getElementById('pilihSayur').selectedIndex].text.split('(')[0];
+        let total = Math.round(angka * harga);
+
+        output.value += `${nama}: ${angka}gr x Rp${harga} = Rp${total}\n`;
     }
 
     function buatBon() {
-        // Kep: Hanya menyalin isi bon saja
+        // Kep: Hanya menyalin isi bon saja sesuai jati diri Wawa
         output.select();
         document.execCommand('copy');
         alert("Bon berhasil dicopy ke memori!");
     }
 </script>
-
-</body>
-</html>
